@@ -5,6 +5,7 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 
 import DefaultLayout from './layout/DefaultLayout';
+import ProtectedRoute from './components/ProtectedRoute';
 import SignUp from './pages/Authentication/SignUp';
 import AudioMatch from './pages/Project/AudioMatch';
 import ArtistDetails from './pages/Admin/Artists/ArtistDetails';
@@ -19,14 +20,25 @@ import NewPassword from './pages/Authentication/Password/NewPassword';
 import Dashboard from './pages/Dashboard/Dashboard';
 import AllArtistsPage from './pages/ArtistManagement/AllArtistsPge';
 import AllStationsPage from './pages/StationManagement/AllStationsPage';
+import StationDetails from './pages/Admin/Stations/StationDetails';
+import AllPublishersPage from './pages/PublisherManagement/AllPublishersPage';
+import PublisherDetails from './pages/Admin/Publishers/PublisherDetails';
 import ArtistTracksView from './pages/Song&DetectionManagement/SongManager';
+import AdminTrackDetails from './pages/Song&DetectionManagement/TrackDetails';
 import AllFansPage from './pages/FanManagement/AllFansPage';
+import AdminCompleteProfile from './pages/Authentication/Onboarding/AdminCompleteProfile';
+import DisputesList from './pages/Disputes/DisputesList';
+import DisputeDetails from './pages/Disputes/DisputeDetails';
+import RoyaltiesList from './pages/Royalties/RoyaltiesList';
+import ArtistRoyaltyDetails from './pages/Royalties/ArtistRoyaltyDetails';
+import PlatformAnalytics from './pages/PlatformAnalytics/PlatformAnalytics';
 
 const hiddenOnRoutes = [
   '/',
   '/sign-up',
   '/verify-email',
   '/sign-in',
+  '/onboarding/profile',
   '/forgot-password',
   '/new-password-reset',
   '/confirm-password-otp',
@@ -53,6 +65,8 @@ function App() {
   ) : shouldUseDefaultLayout ? (
     <DefaultLayout hiddenOnRoutes={hiddenOnRoutes}>
       <Routes>
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
         <Route
           path="/dashboard"
           element={
@@ -100,6 +114,33 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/station-details"
+          element={
+            <>
+              <PageTitle title="Station Details | Admin | ZamIO-Admin" />
+              <StationDetails />
+            </>
+          }
+        />
+        <Route
+          path="/all-publishers"
+          element={
+            <>
+              <PageTitle title="All Publishers | Admin | ZamIO-Admin" />
+              <AllPublishersPage />
+            </>
+          }
+        />
+        <Route
+          path="/publisher-details"
+          element={
+            <>
+              <PageTitle title="Publisher Details | Admin | ZamIO-Admin" />
+              <PublisherDetails />
+            </>
+          }
+        />
 
         <Route
           path="/all-artist-tracks"
@@ -107,6 +148,15 @@ function App() {
             <>
               <PageTitle title="All Artist Tracks | Admin | ZamIO-Admin" />
               <ArtistTracksView />
+            </>
+          }
+        />
+        <Route
+          path="/track-details"
+          element={
+            <>
+              <PageTitle title="Track Details | Admin | ZamIO-Admin" />
+              <AdminTrackDetails />
             </>
           }
         />
@@ -129,6 +179,52 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/disputes"
+          element={
+            <>
+              <PageTitle title="Dispute Resolution Panel | ZamIO-Admin" />
+              <DisputesList />
+            </>
+          }
+        />
+        <Route
+          path="/disputes/:id"
+          element={
+            <>
+              <PageTitle title="Dispute Details | ZamIO-Admin" />
+              <DisputeDetails />
+            </>
+          }
+        />
+        <Route
+          path="/royalties"
+          element={
+            <>
+              <PageTitle title="Royalty & Payments Oversight | ZamIO-Admin" />
+              <RoyaltiesList />
+            </>
+          }
+        />
+        <Route
+          path="/royalties/:artist_id"
+          element={
+            <>
+              <PageTitle title="Artist Royalty Details | ZamIO-Admin" />
+              <ArtistRoyaltyDetails />
+            </>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <>
+              <PageTitle title="Platform Analytics | ZamIO-Admin" />
+              <PlatformAnalytics />
+            </>
+          }
+        />
+        </Route>
       </Routes>
     </DefaultLayout>
   ) : (
@@ -178,6 +274,15 @@ function App() {
             <>
               <PageTitle title="Verify Email | ZamIO-Admin" />
               <VerifyEmail />
+            </>
+          }
+        />
+        <Route
+          path="/onboarding/profile"
+          element={
+            <>
+              <PageTitle title="Complete Profile | ZamIO-Admin" />
+              <AdminCompleteProfile />
             </>
           }
         />

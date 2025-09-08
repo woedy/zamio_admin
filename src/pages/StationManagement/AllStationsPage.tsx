@@ -9,7 +9,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { baseUrl, userToken } from '../../constants';
+import { baseUrl, baseUrlMedia, userToken } from '../../constants';
 import Pagination from '../../components/Pagination';
 
 const AllStationsPage = () => {
@@ -17,7 +17,8 @@ const AllStationsPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('monthly');
 
   const [filter, setFilter] = useState('all');
-  const [stations, setStations] = useState([]);
+  const [stations, setStations] = useState<any[]>([]);
+  const [linksByStation, setLinksByStation] = useState<Record<string, any[]>>({});
 
   const [search, setSearch] = useState('');
   const [orderStations, setOrderStations] = useState('');
@@ -72,6 +73,33 @@ const AllStationsPage = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Resolve media URLs for images
+  const mediaUrl = (u?: string | null) => {
+    if (!u) return '';
+    if ((u as string).startsWith('http')) return u as string;
+    if ((u as string).startsWith('/')) return `${baseUrlMedia}${u}`;
+    return `${baseUrlMedia}/${u}`;
+  };
+
+  // Load stream links for visible stations
+  useEffect(() => {
+    const loadLinks = async () => {
+      const missing = stations.filter((s) => s?.station_id && !linksByStation[s.station_id]);
+      for (const s of missing) {
+        try {
+          const res = await fetch(
+            `${baseUrl}api/stations/get-station-stream-links/?station_id=${encodeURIComponent(s.station_id)}`,
+            { headers: { 'Content-Type': 'application/json', Authorization: `Token ${userToken}` } }
+          );
+          if (!res.ok) continue;
+          const payload = await res.json();
+          setLinksByStation((prev) => ({ ...prev, [s.station_id]: payload?.data?.links || [] }));
+        } catch {}
+      }
+    };
+    if (stations?.length) loadLinks();
+  }, [stations]);
 
 
   return (
@@ -156,11 +184,10 @@ const AllStationsPage = () => {
                 <thead className="text-xs uppercase bg-white/5 text-gray-400">
                   <tr>
                     <th className="px-4 py-3">Station ID</th>
-                    <th className="px-4 py-3">Name</th>
+                    <th className="px-4 py-3">Station</th>
                     <th className="px-4 py-3">Region</th>
-                    <th className="px-4 py-3">registered_on</th>
-                    <th className="px-4 py-3">status</th>
-
+                    <th className="px-4 py-3">Created</th>
+                    <th className="px-4 py-3">Streams</th>
                     <th className="px-4 py-3">Actions</th>
                   </tr>
                 </thead>
@@ -169,26 +196,41 @@ const AllStationsPage = () => {
                     <tr key={station.station_id}>
                       <td className="px-4 py-2">{station.station_id}</td>
                       <td className="px-4 py-2 text-white">
-                        {station.name}
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-white/10 border border-white/10">
+                            {station.photo ? (
+                              <img src={mediaUrl(station.photo)} alt="Station" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-[10px] text-white/60">FM</div>
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-medium">{station.name}</div>
+                            <div className="text-xs text-gray-400">{[station.city, station.country].filter(Boolean).join(', ')}</div>
+                          </div>
+                        </div>
                       </td>
                       <td className="px-4 py-2">{station.region}</td>
 
-                      <td className="px-4 py-2">{station.created_at}</td>
-
                       <td className="px-4 py-2">
-                        {' '}
-                        <button className="w-full text-xs bg-orange text-white py-2 rounded-full font-semibold hover:shadow-lg transition-shadow">
-                          {station.status}
-                        </button>
+                        <div>{station.created_at}</div>
+                        <div className="text-[11px] text-cyan-300 truncate">
+                          {(linksByStation[station.station_id] && linksByStation[station.station_id][0]?.link) ? (
+                            <a href={linksByStation[station.station_id][0].link} target="_blank" rel="noreferrer">
+                              {linksByStation[station.station_id][0].link}
+                            </a>
+                          ) : (
+                            '—'
+                          )}
+                        </div>
                       </td>
+
+                      <td className="px-4 py-2 text-xs text-gray-300">—</td>
 
                       <td>
                         {' '}
                         <div className="flex">
-                          <Link
-                            to="/station-details"
-                            state={{ station_id: 'station_id' }}
-                          >
+                          <Link to={`/station-details?station_id=${station.station_id}`}>
                             <Eye className="w-4 h-4 mr-2" />
                           </Link>
 

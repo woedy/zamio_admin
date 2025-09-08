@@ -52,12 +52,14 @@ const InternalAdminDashboard = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [platformStats, setPlatformStats] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
-  const [topEarners, setTopEarners] = useState([]);
-  const [revenueData, setRevenueData] = useState([]);
-  const [genreData, setGenreData] = useState([]);
-  const [dailyActivityData, setDailyActivityData] = useState([]);
+  const [platformStats, setPlatformStats] = useState<any>({});
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [topEarners, setTopEarners] = useState<any[]>([]);
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+  const [genreData, setGenreData] = useState<any[]>([]);
+  const [dailyActivityData, setDailyActivityData] = useState<any[]>([]);
+  const [stationPerformance, setStationPerformance] = useState<any[]>([]);
+  const [distributionMetrics, setDistributionMetrics] = useState<any[]>([]);
 
   // Sample data for the admin platform
   const platformStats2 = {
@@ -132,56 +134,9 @@ const InternalAdminDashboard = () => {
     },
   ];
 
-  const stationPerformance = [
-    {
-      name: 'Peace FM',
-      plays: 156789,
-      revenue: 12456.78,
-      status: 'active',
-      compliance: 98,
-    },
-    {
-      name: 'Joy FM',
-      plays: 145623,
-      revenue: 11234.56,
-      status: 'active',
-      compliance: 95,
-    },
-    {
-      name: 'Asempa FM',
-      plays: 134567,
-      revenue: 10987.43,
-      status: 'active',
-      compliance: 97,
-    },
-    {
-      name: 'Hitz FM',
-      plays: 123456,
-      revenue: 9876.54,
-      status: 'active',
-      compliance: 92,
-    },
-    {
-      name: 'Okay FM',
-      plays: 112345,
-      revenue: 8765.43,
-      status: 'warning',
-      compliance: 85,
-    },
-  ];
+  // stationPerformance provided by API
 
-  const distributionMetrics = [
-    { platform: 'Spotify', tracks: 12456, revenue: 45234.56, growth: 15.2 },
-    { platform: 'Apple Music', tracks: 11234, revenue: 38945.23, growth: 12.8 },
-    {
-      platform: 'YouTube Music',
-      tracks: 9876,
-      revenue: 29876.45,
-      growth: 18.4,
-    },
-    { platform: 'Local Radio', tracks: 8765, revenue: 23456.78, growth: 8.9 },
-    { platform: 'Boomplay', tracks: 7654, revenue: 18765.43, growth: 22.1 },
-  ];
+  // distributionMetrics provided by API
 
   // Chart data
   const revenueData222 = [
@@ -270,11 +225,13 @@ const InternalAdminDashboard = () => {
 
         const data = await response.json();
         setPlatformStats(data.data.platformStats);
-        setRecentActivity(data.data.recentActivity);
-        setTopEarners(data.data.topEarners);
-        setRevenueData(data.data.revenueData);
-        setGenreData(data.data.genreData);
-        setDailyActivityData(data.data.dailyActivityData);
+        setRecentActivity(data.data.recentActivity || []);
+        setTopEarners(data.data.topEarners || []);
+        setRevenueData(data.data.revenueData || []);
+        setGenreData(data.data.genreData || []);
+        setDailyActivityData(data.data.dailyActivityData || []);
+        setStationPerformance(data.data.stationPerformance || []);
+        setDistributionMetrics(data.data.distributionMetrics || []);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

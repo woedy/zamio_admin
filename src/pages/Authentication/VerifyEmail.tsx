@@ -39,7 +39,7 @@ const VerifyEmail = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(baseUrl + 'api/accounts/verify-email/', {
+      const response = await fetch(baseUrl + 'api/accounts/verify-admin-email/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

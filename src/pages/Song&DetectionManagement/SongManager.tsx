@@ -20,7 +20,7 @@ import Pagination from '../../components/Pagination';
 const ArtistTracksView = () => {
   const [view, setView] = useState('table');
   const [filter, setFilter] = useState('all');
-  const [mockTracks, setMockTracks] = useState([]);
+  const [tracks, setTracks] = useState<any[]>([]);
 
   const [search, setSearch] = useState('');
   const [orderSongs, setOrderSongs] = useState('');
@@ -29,9 +29,10 @@ const ArtistTracksView = () => {
   const [totalPages, setTotalPages] = useState(1); // Default to 1 to avoid issues
   const [loading, setLoading] = useState(false);
 
-  const filteredTracks = mockTracks.filter((track) => {
+  const filteredTracks = tracks.filter((track) => {
     if (filter === 'all') return true;
-    return track.status.toLowerCase() === filter;
+    const status = (track.status || '').toString().toLowerCase();
+    return status === filter;
   });
 
   const location = useLocation();
@@ -65,7 +66,7 @@ const ArtistTracksView = () => {
       }
 
       const data = await response.json();
-      setMockTracks(data.data.tracks);
+      setTracks(data.data.tracks || []);
       setTotalPages(data.data.pagination.total_pages);
       setItemCount(data.data.pagination.count);
       console.log('Total Pages:', data.data.pagination.total_pages);
@@ -105,6 +106,8 @@ const ArtistTracksView = () => {
                   type="text"
                   placeholder="Search..."
                   className="bg-white/10 backdrop-blur-md text-white pl-10 pr-4 py-2 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  value={search}
+                  onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 />
               </div>
             </div>
@@ -155,6 +158,7 @@ const ArtistTracksView = () => {
               <thead className="bg-slate-800 text-left">
                 <tr>
                   <th className="p-3">Title</th>
+                  <th className="p-3">Artist</th>
                   <th className="p-3">Duration</th>
                   <th className="p-3">Release Date</th>
                   <th className="p-3">Genre</th>
@@ -169,27 +173,25 @@ const ArtistTracksView = () => {
                     className="border-t border-white/10 hover:bg-white/10"
                   >
                     <td className="p-3 font-medium">{track.title}</td>
-                    <td className="p-3">{track.duration}</td>
+                    <td className="p-3">{track.artist_name || '-'}</td>
+                    <td className="p-3">{track.duration || '-'}</td>
                     <td className="p-3">{track.release_date}</td>
                     <td className="p-3">{track.genre_name}</td>
-                    <td className="p-3">{track.plays}</td>
+                    <td className="p-3">{track.airplays ?? 0}</td>
                     <td className="p-3">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          track.status === 'Approved' ? 'bg-green' : 'bg-yellow'
+                          track.active ? 'bg-green' : 'bg-yellow'
                         }`}
                       >
-                        {track.status}
+                        {track.active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
 
                     <td>
                       {' '}
                       <div className="flex">
-                        <Link
-                          to="/track-details"
-                          state={{ track_id: track?.track_id }}
-                        >
+                        <Link to="/track-details" state={{ track_id: track?.track_id }}>
                           <Eye className="w-4 h-4 mr-2" />
                         </Link>
 
@@ -251,3 +253,4 @@ const ArtistTracksView = () => {
 };
 
 export default ArtistTracksView;
+

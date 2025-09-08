@@ -227,20 +227,12 @@ const AllArtistsPage = () => {
 
                       <td className="px-4 py-2">{artist.registered_on}</td>
 
-                      <td className="px-4 py-2">
-                        {' '}
-                        <button className="w-full text-xs bg-orange text-white py-2 rounded-full font-semibold hover:shadow-lg transition-shadow">
-                          {artist.status}
-                        </button>
-                      </td>
+                      <td className="px-4 py-2 text-xs text-gray-300">—</td>
 
                       <td>
                         {' '}
                         <div className="flex">
-                          <Link
-                            to="/artist-details"
-                            state={{ artist_id: 'artist_id' }}
-                          >
+                          <Link to={`/artist-details?artist_id=${artist.artist_id}`}>
                             <Eye className="w-4 h-4 mr-2" />
                           </Link>
 

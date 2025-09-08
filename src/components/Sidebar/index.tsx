@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Search, Bell, Settings, User, HelpCircle, MessageSquare, Upload, Clock, CreditCard, MapPin } from "lucide-react";
+import { Search, Bell, Settings, User, HelpCircle, MessageSquare, Upload, Clock, CreditCard, MapPin, Building2 } from "lucide-react";
 
 
 interface SidebarProps {
@@ -26,11 +26,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     { name: "Dashboard", icon: <Settings className="w-5 h-5" />, route: "/dashboard"},
     { name: "Artist Management", icon: <User className="w-5 h-5" />, route: "/all-artists" },
     { name: "Station Management", icon: <Clock className="w-5 h-5" />, route: "/all-stations" },
+    { name: "Publisher Management", icon: <Building2 className="w-5 h-5" />, route: "/all-publishers" },
     { name: "Song & Detection Management", icon: <Upload className="w-5 h-5" />, route: "/all-artist-tracks" },
     { name: "Fan Management", icon: <Upload className="w-5 h-5" />, route: "/all-fans" },
-    { name: "Dispute Resolution Panel", icon: <CreditCard className="w-5 h-5" />, route: "/royalty-payments" },
-    { name: "Royalty & Payments Oversight", icon: <Bell className="w-5 h-5" /> , route: "/notifications"},
-    { name: "Platform Analytics", icon: <HelpCircle className="w-5 h-5" /> , route: "/help"},
+    { name: "Dispute Resolution Panel", icon: <CreditCard className="w-5 h-5" />, route: "/disputes" },
+    { name: "Royalty & Payments Oversight", icon: <CreditCard className="w-5 h-5" /> , route: "/royalties"},
+    { name: "Platform Analytics", icon: <HelpCircle className="w-5 h-5" /> , route: "/analytics"},
     { name: "Settings", icon: <Settings className="w-5 h-5" />, route: "/settings" },
 
 
